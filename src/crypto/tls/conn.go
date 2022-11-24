@@ -1387,7 +1387,11 @@ func (c *Conn) closeNotify() error {
 // For control over canceling or setting a timeout on a handshake, use
 // HandshakeContext or the Dialer's DialContext method instead.
 func (c *Conn) Handshake() error {
-	return c.HandshakeContext(context.Background())
+	err := c.HandshakeContext(context.Background())
+	if c.config.HandshakeErrorFunc != nil && err != nil {
+		c.config.HandshakeErrorFunc(err)
+	}
+	return err
 }
 
 // HandshakeContext runs the client or server handshake

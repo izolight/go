@@ -13,6 +13,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"golang.org/x/net/http/httpguts"
 	"internal/godebug"
 	"io"
 	"log"
@@ -29,8 +30,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"golang.org/x/net/http/httpguts"
 )
 
 // Errors used by the HTTP server.
