@@ -181,6 +181,7 @@ func doLocalSymbolize(prof *profile.Profile, fast, force bool, obj plugin.ObjToo
 			l.Line[i] = profile.Line{
 				Function: f,
 				Line:     int64(frame.Line),
+				Column:   int64(frame.Column),
 			}
 		}
 
@@ -214,9 +215,9 @@ func Demangle(prof *profile.Profile, force bool, demanglerMode string) {
 func demanglerModeToOptions(demanglerMode string) []demangle.Option {
 	switch demanglerMode {
 	case "": // demangled, simplified: no parameters, no templates, no return type
-		return []demangle.Option{demangle.NoParams, demangle.NoTemplateParams}
+		return []demangle.Option{demangle.NoParams, demangle.NoEnclosingParams, demangle.NoTemplateParams}
 	case "templates": // demangled, simplified: no parameters, no return type
-		return []demangle.Option{demangle.NoParams}
+		return []demangle.Option{demangle.NoParams, demangle.NoEnclosingParams}
 	case "full":
 		return []demangle.Option{demangle.NoClones}
 	case "none": // no demangling
@@ -371,7 +372,7 @@ type mappingTable struct {
 	segments map[*profile.Mapping]plugin.ObjFile
 }
 
-// Close releases any external processes being used for the mapping.
+// close releases any external processes being used for the mapping.
 func (mt *mappingTable) close() {
 	for _, segment := range mt.segments {
 		segment.Close()
